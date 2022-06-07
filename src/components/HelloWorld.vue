@@ -1,43 +1,69 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank" rel="noopener">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-vuex" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank" rel="noopener">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank" rel="noopener">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank" rel="noopener">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank" rel="noopener">Twitter</a></li>
-      <li><a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank" rel="noopener">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank" rel="noopener">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank" rel="noopener">awesome-vue</a></li>
-    </ul>
+    <h1>Test</h1>
+    <InputText class="me-5" v-model="query" placeholder="Search recipe" />
+    <InputNumber
+      class="me-5"
+      v-model="maxCalories"
+      :min="0"
+      placeholder="Max calories"
+    />
+    <InputNumber
+      v-model="numRecipes"
+      :min="0"
+      :max="100"
+      placeholder="Max number of recipes"
+      class="me-5"
+    />
+    <Button
+      label="Search"
+      @click="testFunction(this.query, this.maxCalories, this.numRecipes)"
+    />
+    <div class="container mt-5">
+      <Card v-for="recipe in recipes" :key="recipe.id" style="width: 25em">
+        <template #header>
+          <img :src="recipe.image" style="height: 15rem" />
+        </template>
+        <template #title> {{ recipe.title }} </template>
+      </Card>
+    </div>
   </div>
 </template>
 
 <script>
+import recipeService from "@/recipeService";
+import InputNumber from "primevue/inputnumber";
+import InputText from "primevue/inputtext";
+import Button from "primevue/button";
+import Card from "primevue/card";
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
-}
+  name: "HelloWorld",
+  components: {
+    InputNumber,
+    InputText,
+    Button,
+    Card,
+  },
+  data() {
+    return {
+      query: null,
+      maxCalories: null,
+      numRecipes: null,
+      recipes: [],
+    };
+  },
+  methods: {
+    testFunction(query, maxCalories, numRecipes) {
+      recipeService
+        .getRecipesComplexSearch(query, maxCalories, numRecipes)
+        .then((resp) => {
+          this.recipes = resp.data.results;
+          console.log(this.recipes);
+        })
+        .catch((err) => alert(err));
+    },
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
