@@ -12,16 +12,16 @@ const apiClient = axios.create({
   },
 });
 export default {
-  getRecipesComplexSearch(query, maxCalories, numRecipes) {
+  getRecipesComplexSearch(query, maxCalories) {
     return apiClient.get(
-      `/complexSearch?query=${query}&maxCalories=${maxCalories}&number=${numRecipes}`
+      `/complexSearch?query=${query}&maxCalories=${maxCalories}&number=100&addRecipeInformation=true`
     );
   },
   getRecipeByIngredients(ingredients) {
     return apiClient.get(`/findByIngredients?ingredients=${ingredients}`);
   },
   getRecipeWithId(id) {
-    return apiClient.get(`${id}/analyzedIntructions`);
+    return apiClient.get(`${id}/analyzedInstructions`);
   },
   getRecipeSummary(id) {
     return apiClient.get(`${id}/summary`);
